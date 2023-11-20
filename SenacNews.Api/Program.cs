@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SenacNews.Infra.Context;
+
 namespace SenacNews.Api
 {
     public class Program
@@ -6,16 +9,17 @@ namespace SenacNews.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            string? connectionString = builder.Configuration.GetConnectionString("Homolog");
+
+            builder.Services.AddDbContext<SenacNewsContext>(opt =>
+                opt.UseSqlServer(connectionString));
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -23,12 +27,8 @@ namespace SenacNews.Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }
