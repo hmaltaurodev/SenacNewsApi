@@ -3,6 +3,7 @@ using SenacNews.Application.Handlers;
 using SenacNews.Domain.Interfaces.Repositories;
 using SenacNews.Infra.Context;
 using SenacNews.Infra.Repositories;
+using System.Text.Json.Serialization;
 
 namespace SenacNews.Api
 {
@@ -19,6 +20,8 @@ namespace SenacNews.Api
             string? connectionString = builder.Configuration.GetConnectionString("Homolog");
 
             builder.Services.AddDbContext<SenacNewsContext>(opt => opt.UseSqlServer(connectionString));
+            builder.Services.AddControllers().AddJsonOptions(opt =>
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             builder.Services.AddScoped<AuthorHandler>();
             builder.Services.AddScoped<CategoryHandler>();
